@@ -7,6 +7,15 @@ const movies = [
     { title: 'Brazil', year: 1985, rating: 8 },
     { title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
 ]
+const sortByDate = movies.sort((a,b) => {
+    return a.year - b.year
+})
+const sortByRating = movies.sort((a,b) => {
+    return b.rating - a.rating
+})
+const sortByTitle = movies.slice().sort((a,b) => {
+    return a.title.localeCompare(b.title)
+})
 
 app.get('/', (req, res) => {
     res.json('ok')
@@ -44,6 +53,18 @@ app.get('/movies/update', (req, res) => {
 
 app.get('/movies/delete', (req, res) => {
     
+})
+
+app.get('/movies/read/by-date', (req, res) =>{
+    res.status(200).json({status: 200, data: sortByDate })
+})
+
+app.get('/movies/read/by-rating', (req, res) =>{
+    res.status(200).json({status: 200, data: sortByRating})
+})
+
+app.get('/movies/read/by-title', (req, res) => {
+    res.status(200).json({status: 200, data: sortByTitle})
 })
 
 app.listen(3000)
