@@ -23,6 +23,9 @@ const addMovie = ((title, year, rating) => {
     newMovie = movies.push({ title, year, rating })
     return newMovie
 })
+const deleteMovie = ((id) => {
+    return movies.filter(movie => movie.title !== id)
+})
 
 app.get('/', (req, res) => {
     res.json('ok')
@@ -94,8 +97,10 @@ app.get('/movies/add', (req, res) => {
         res.status(403).json({status: 403, error: true, message: 'you cannot create a movie without providing a title and a year'})
 })
 
+app.get('/movies/delete/:id?', (req, res) => {
+    const { id } = req.params
+    const movie = deleteMovie(id)
+    movie ? res.status(200).json({data: movie}) : res.status(404).json({status: 404, error: true, message: `the movie ${id} does not exist`})
+})
+
 app.listen(3000)
-
-
-// !title || !year || year.length !== 4 ? res.status(403).json({status: 403, error: true, message: 'you cannot create a movie without providing a title and a year'})
-//         : res.status(200).json({ data: movies })
