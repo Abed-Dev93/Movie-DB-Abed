@@ -16,6 +16,9 @@ const sortByRating = movies.sort((a,b) => {
 const sortByTitle = movies.slice().sort((a,b) => {
     return a.title.localeCompare(b.title)
 })
+const readOneMovie = ((id) => {
+    return movies.find(movie => movie.title === id)
+})
 
 app.get('/', (req, res) => {
     res.json('ok')
@@ -65,6 +68,12 @@ app.get('/movies/read/by-rating', (req, res) =>{
 
 app.get('/movies/read/by-title', (req, res) => {
     res.status(200).json({status: 200, data: sortByTitle})
+})
+
+app.get('/movies/read/id/:id?', (req, res) => {
+    const { id } = req.params
+    const movie = readOneMovie(id)
+    movie ? res.status(200).json({status: 200, data: movie}) : res.status(404).json({status: 404, error: true, message: `the movie ${id} does not exist`})
 })
 
 app.listen(3000)
