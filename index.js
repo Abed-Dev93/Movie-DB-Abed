@@ -19,6 +19,10 @@ const sortByTitle = movies.slice().sort((a,b) => {
 const readOneMovie = ((id) => {
     return movies.find(movie => movie.title === id)
 })
+const addMovie = ((title, year, rating) => {
+    newMovie = movies.push({ title, year, rating })
+    return newMovie
+})
 
 app.get('/', (req, res) => {
     res.json('ok')
@@ -76,4 +80,22 @@ app.get('/movies/read/id/:id?', (req, res) => {
     movie ? res.status(200).json({status: 200, data: movie}) : res.status(404).json({status: 404, error: true, message: `the movie ${id} does not exist`})
 })
 
+app.get('/movies/add', (req, res) => {
+    const { title, year, rating } = req.query
+    if (title || year || year.length === 4 || rating) {
+        const newMovie = addMovie(title, Number(year), Number(rating))
+        res.status(200).json({data: movies})
+    }
+    else if (!rating || title || year || year.length === 4){
+        const newMovie = addMovie(title, Number(year), Number('4'))
+        res.status(200).json({data: movies})
+    }
+    else
+        res.status(403).json({status: 403, error: true, message: 'you cannot create a movie without providing a title and a year'})
+})
+
 app.listen(3000)
+
+
+// !title || !year || year.length !== 4 ? res.status(403).json({status: 403, error: true, message: 'you cannot create a movie without providing a title and a year'})
+//         : res.status(200).json({ data: movies })
