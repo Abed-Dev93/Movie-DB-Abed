@@ -26,6 +26,33 @@ const addMovie = ((title, year, rating) => {
 const deleteMovie = ((id) => {
     return movies.filter(movie => movie.title !== id)
 })
+const updateMovieTitle = ((id, change) => {
+    const find = movies.find(movie => movie.title === id)
+    if (find)
+        find.title = change
+    return movies
+})
+const updateMovie = ((id, changeTitle, changeRating, changeYear) => {
+    const find = movies.find(movie => movie.title === id)
+    if (find) {
+        if (changeTitle === undefined) {
+            find.title = movies.title
+            find.rating = parseFloat(changeRating)
+            find.year = Number(changeYear)
+        }
+        else if (changeRating === undefined) {
+            find.rating = movies.rating
+            find.title = changeTitle
+            find.year = Number(changeYear)
+        }
+        else if (changeYear === undefined) {
+            find.year = movies.year
+            find.rating = parseFloat(changeRating)
+            find.title = changeTitle
+        }
+    }
+    return movies
+})
 
 app.get('/', (req, res) => {
     res.json('ok')
@@ -49,20 +76,8 @@ app.get('/search', (req, res) => {
     queries ? res.status(200).json({status: 200, message: "ok", data: queries}) : res.status(500).json({status: 500, error: true, message: "you have to provide a search"})
 })
 
-app.get('/movies/create', (req, res) => {
-
-})
-
 app.get('/movies/read', (req, res) => {
     res.status(200).json({status: 200, data: movies })
-})
-
-app.get('/movies/update', (req, res) => {
-    
-})
-
-app.get('/movies/delete', (req, res) => {
-    
 })
 
 app.get('/movies/read/by-date', (req, res) =>{
@@ -101,6 +116,22 @@ app.get('/movies/delete/:id?', (req, res) => {
     const { id } = req.params
     const movie = deleteMovie(id)
     movie ? res.status(200).json({data: movie}) : res.status(404).json({status: 404, error: true, message: `the movie ${id} does not exist`})
+})
+
+app.get('/movies/update/:id?', (req, res) => {
+    const { title } = req.query
+    const { id } = req.params
+    const movie = updateMovieTitle(id, title)
+    if (movie)
+        res.status(200).json({data: movie})
+})
+
+app.get('/movies/update/:id?', (req, res) => {
+    const { title, rating, year } = req.query
+    const { id } = req.params
+    const movie = updateMovie(id, title, rating, year)
+    if (movie)
+        res.status(200).json({data: movie})
 })
 
 app.listen(3000)
